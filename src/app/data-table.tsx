@@ -20,11 +20,7 @@ export function DataTable<TData, TValue>( props: DataTableProps<TData, TValue>) 
 
   return (
     <div className="rounded-md border">
-      <Table
-        style={{
-          width: table.getTotalSize()
-        }}
-      >
+      <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow

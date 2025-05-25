@@ -53,31 +53,28 @@ const getFhirVersionString = (version: FHIRVersion) => {
 }
 
 const columnHelper = createColumnHelper<ResourceRow>();
-const maxHeight = 100;
 export const columns: ColumnDef<ResourceRow, string>[] = [
   columnHelper.accessor("content", {
     cell: info => <div
       style={{
         overflow: "hidden",
-        maxHeight: maxHeight,
       }}
     >
       {info.getValue()}
     </div>,
     header: () => <span>Content</span>,
-    size: 400
+    size: 200
   }),
   columnHelper.accessor("aiSummary", {
     cell: info => <div
       style={{
         overflow: "hidden",
-        maxHeight: maxHeight,
       }}
     >
       {info.getValue()}
     </div>,
     header: () => <span>AI Summary</span>,
-    size: 400
+    size: 200
   }),
   columnHelper.group({
     header: 'Metadata',
