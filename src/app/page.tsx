@@ -31,7 +31,8 @@ async function getData(): Promise<ResourceRow[]> {
 }
 
 export default async function Home() {
-  const tableColumns = useMemo(() => columns, []);
+  const tableColumns = columns;
+  // const tableColumns = useMemo(() => columns, []);
 
   const data = await getData();
   // const [data, setData] = useState<ResourceRow[]>([]);
