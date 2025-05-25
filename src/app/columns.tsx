@@ -1,7 +1,10 @@
 "use client"
 
-import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
+import { createColumnHelper } from "@tanstack/react-table"
 import { FHIRVersion, ProcessingState } from "@/utils/types"
+import { AlarmClock, CircleCheck, CircleEllipsis, CircleHelp, CircleX, FileQuestion } from "lucide-react"
+import { TooltipContainer } from "./tooltip-container"
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 
 // Define your row shape
 export type ResourceRow = {
@@ -17,22 +20,32 @@ export type ResourceRow = {
 }
 
 /**
- * Get the string representation for the processing state
+ * Get the icon for the processing state
  * @param state Processing state
- * @returns String representation
+ * @returns Icon
  */
-const getStateString = (state: ProcessingState) => {
+const getStateIcon = (state: ProcessingState) => {
   switch(state) {
     case ProcessingState.PROCESSING_STATE_NOT_STARTED:
-      return "Not Started";
+      return <TooltipContainer tooltip={<p>Not Started</p>}>
+        <AlarmClock color="orange" />
+      </TooltipContainer>
     case ProcessingState.PROCESSING_STATE_PROCESSING:
-      return "Processing";
+      return <TooltipContainer tooltip={<p>Processing</p>}>
+        <CircleEllipsis color="blue" />
+      </TooltipContainer>
     case ProcessingState.PROCESSING_STATE_COMPLETED:
-      return "Completed";
+      return <TooltipContainer tooltip={<p>Completed</p>}>
+        <CircleCheck color="green" />
+      </TooltipContainer>
     case ProcessingState.PROCESSING_STATE_FAILED:
-      return "Failed";
+      return <TooltipContainer tooltip={<p>Failed</p>}>
+        <CircleX color="red" />
+      </TooltipContainer>
     default:
-      return "Unspecified";
+      return <TooltipContainer tooltip={<p>Unspecified</p>}>
+        <FileQuestion color="gray" />
+      </TooltipContainer>
   }
 }
 
@@ -53,55 +66,58 @@ const getFhirVersionString = (version: FHIRVersion) => {
 }
 
 const columnHelper = createColumnHelper<ResourceRow>();
-export const columns: ColumnDef<ResourceRow, string>[] = [
+export const columns = [
+  columnHelper.accessor("patientId", {
+    cell: info => info.getValue(),
+    header: () => <span>Patient ID</span>,
+    size: 84
+  }),
+  columnHelper.accessor("state", {
+    cell: info => getStateIcon(info.getValue()),
+    header: () => <span>State</span>,
+    size: 40,
+  }),
+  columnHelper.accessor("type", {
+    cell: info => info.getValue(),
+    header: () => <span>Type</span>,
+    size: 84,
+  }),
   columnHelper.accessor("content", {
     cell: info => info.getValue(),
     header: () => <span>Content</span>,
-    size: 200
+    size: 400
   }),
   columnHelper.accessor("aiSummary", {
-    cell: info => info.getValue(),
+    cell: info => <div className="font-semibold">{info.getValue()}</div>,
     header: () => <span>AI Summary</span>,
-    size: 200
+    size: 400
   }),
-  columnHelper.group({
-    header: 'Metadata',
-    columns: [
-      columnHelper.accessor("patientId", {
-        cell: info => info.getValue(),
-        header: () => <span>Patient ID</span>,
-        size: 100
-      }),
-      columnHelper.accessor("type", {
-        cell: info => info.getValue(),
-        header: () => <span>Type</span>,
-        size: 150
-      }),
-      columnHelper.accessor("createdTime", {
-        cell: info => info.getValue<Date>().toString(),
-        header: () => <span>Created At</span>,
-        size: 200
-      }),
-      columnHelper.accessor("fetchTime", {
-        cell: info => info.getValue<Date>().toString(),
-        header: () => <span>Fetched At</span>,
-        size: 200
-      }),
-      columnHelper.accessor("state", {
-        cell: info => getStateString(info.getValue()),
-        header: () => <span>State</span>,
-        size: 100
-      }),
-      columnHelper.accessor("processedTime", {
-        cell: info => info.getValue() ? info.getValue<Date>().toString() : undefined,
-        header: () => <span>Processed At</span>,
-        size: 200
-      }),
-      columnHelper.accessor("version", {
-        cell: info => getFhirVersionString(info.getValue()),
-        header: () => <span>FHIR Version</span>,
-        size: 100
-      }),
-    ]
+  columnHelper.display({
+    id: 'metadata',
+    cell: props => <HoverCard>
+      <HoverCardTrigger>
+        {<CircleHelp color="gray" />}
+      </HoverCardTrigger>
+      <HoverCardContent className="w-84">
+        <div className="grid grid-cols-2">
+          <p className="text-muted-foreground">Created On</p>
+          <p>{props.row.original.createdTime.toLocaleString()}</p>
+          
+          <p className="text-muted-foreground">Fetched On</p>
+          <p>{props.row.original.fetchTime.toLocaleString()}</p>
+
+          { props.row.original.processedTime &&
+            <>
+              <p className="text-muted-foreground">Processed On</p>
+              <p>{props.row.original.processedTime.toLocaleString()}</p>
+            </>
+          }
+          
+          <p className="text-muted-foreground">FHIR Version</p>
+          <p>{getFhirVersionString(props.row.original.version)}</p>
+        </div>
+      </HoverCardContent> 
+    </HoverCard>,
+    size: 28
   })
 ]
