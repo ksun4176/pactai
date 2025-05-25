@@ -49,7 +49,7 @@ export default async function Home() {
   return (
     <div className="min-h-screen p-2 font-[family-name:var(--font-geist-sans)]">
       <main>
-        <DataTable columns={tableColumns} data={data} />
+        <DataTable<ResourceRow, any> columns={tableColumns} data={data} />
       </main>
     </div>
   );
