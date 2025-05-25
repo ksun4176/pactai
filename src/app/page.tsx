@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { resources } from "@/__mocks__/data";
 import { columns, ResourceRow } from "./columns";
 import { DataTable } from "./data-table";
