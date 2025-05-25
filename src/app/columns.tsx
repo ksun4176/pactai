@@ -55,24 +55,12 @@ const getFhirVersionString = (version: FHIRVersion) => {
 const columnHelper = createColumnHelper<ResourceRow>();
 export const columns: ColumnDef<ResourceRow, string>[] = [
   columnHelper.accessor("content", {
-    cell: info => <div
-      style={{
-        overflow: "hidden",
-      }}
-    >
-      {info.getValue()}
-    </div>,
+    cell: info => info.getValue(),
     header: () => <span>Content</span>,
     size: 200
   }),
   columnHelper.accessor("aiSummary", {
-    cell: info => <div
-      style={{
-        overflow: "hidden",
-      }}
-    >
-      {info.getValue()}
-    </div>,
+    cell: info => info.getValue(),
     header: () => <span>AI Summary</span>,
     size: 200
   }),

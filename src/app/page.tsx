@@ -1,6 +1,7 @@
 import { resources } from "@/__mocks__/data";
 import { columns, ResourceRow } from "./columns";
 import { DataTable } from "./data-table";
+import _ from "lodash";
 
 /**
  * Fetch data from database and format it for DataTable
@@ -10,7 +11,7 @@ async function getData(): Promise<ResourceRow[]> {
   // fetch data
   const data = resources;
   // transform data
-  const formattedData: ResourceRow[] = [];
+  let formattedData: ResourceRow[] = [];
   for (const rowData of data) {
     const resource = rowData.resource;
     const row: ResourceRow = {
@@ -25,6 +26,10 @@ async function getData(): Promise<ResourceRow[]> {
       version: resource.metadata.version,
     }
     formattedData.push(row);
+  }
+  // clone data 2^4 times
+  for (let i = 0; i < 4; i++) {
+    formattedData = formattedData.concat(_.cloneDeep(formattedData));
   }
   return formattedData;
 }
