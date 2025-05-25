@@ -49,7 +49,8 @@ export default async function Home() {
   return (
     <div className="min-h-screen p-2 font-[family-name:var(--font-geist-sans)]">
       <main>
-        <DataTable<ResourceRow, any> columns={tableColumns} data={data} />
+        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any  */}
+        <DataTable<ResourceRow, any> columns={tableColumns} data={data} /> 
       </main>
     </div>
   );
